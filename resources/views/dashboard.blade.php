@@ -25,7 +25,7 @@
                         <button class="btn btn-info">Products</button>
                     </a>
                     <a href="{{ route('invoices.index') }}">
-                        <button class="btn btn-success">Invoice</button>
+                        <button class="btn btn-success">Invoices</button>
                     </a>
                 </div>
             </div>

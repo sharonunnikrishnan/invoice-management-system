@@ -13,7 +13,7 @@
 
 <body>
     <div class="container mt-5">
-        <h2>Create New Invoice</h2>
+        <h2>Update Invoice</h2>
         <div class="row">
             <div class="col-sm-12">
                 <a href="{{ route('dashboard') }}">
@@ -39,22 +39,54 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <label>Customer</label>
-                            <input type="text" name="name" class="form-control" value="<?= $customer->name ?>">
+                            <select class="form-control" name="customer_id">
+                                <option>Select Customer</option>
+                                @foreach ($customers as $customer)
+                                    <option value="{{ $customer->id }}"
+                                        @if ($invoice->customer_id == $customer->id) selected @endif>{{ $customer->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="col-sm-6">
-                            <label>Email</label>
-                            <input type="email" name="email" class="form-control" value="<?= $customer->email ?>">
+                            <label>Product</label>
+                            <select class="form-control" name="product_id" id="product_id">
+                                <option>Select Product</option>
+                                @foreach ($products as $product)
+                                    <option value="{{ $product->id }}"
+                                        @if ($product->id == $invoice->product_id) selected @endif>{{ $product->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="col-sm-6">
-                            <label>Phone</label>
-                            <input type="text" name="phone" class="form-control" value="<?= $customer->phone ?>">
+                            <label>Price</label>
+                            <input type="text" name="price" id="price" class="form-control" readonly="true">
                         </div>
                         <div class="col-sm-6">
-                            <label> Address </label>
-                            <textarea class="form-control" name="address"><?= $customer->address ?></textarea>
+                            <label>Description</label>
+                            <textarea id="description" class="form-control"></textarea>
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Quantity</label>
+                            <input type="number" name="quantity" id="quantity" class="form-control"
+                                value="{{ $invoice->quantity }}">
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Total Amount</label>
+                            <input type="text" name="total_amount" id="total_amount" class="form-control"
+                                value="{{ $invoice->total_amount }}" readonly>
+                        </div>
+                        <div class="col-sm-6">
+                            <label> Invoice Date </label>
+                            <input type="date" name="inoice_date" class="form-control"
+                                value="{{ $invoice->inoice_date }}">
+                        </div>
+                        <div class="col-sm-6">
+                            <label> Due Date </label>
+                            <input type="date" name="due_date" class="form-control"
+                                value="{{ $invoice->due_date }}">
                         </div>
                         <div class="col-sm-12 mt-5">
-                            <button type="submit" class="btn btn-primary">Update Customer</button>
+                            <button type="submit" class="btn btn-primary">Save Invoice</button>
                         </div>
                     </div>
 
@@ -68,3 +100,63 @@
 </body>
 
 </html>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+    function productDetails(productId) {
+        if (productId) {
+
+            $.ajax({
+                url: '/get-product/' + productId,
+                type: 'GET',
+                success: function(response) {
+
+                    $('#price').val(response.price);
+                    $('#description').val(response.description);
+
+                }
+            });
+
+        }
+    }
+
+    $(document).ready(function() {
+
+        $('#product_id').change(function() {
+
+            let productId = $(this).val();
+
+            productDetails(productId);
+
+        });
+
+        let productId = $('#product_id').val();
+
+        if (productId) {
+            productDetails(productId);
+        }
+
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+
+        function calculateTotal() {
+
+            let price = parseFloat($('#price').val()) || 0;
+            let quantity = parseInt($('#quantity').val()) || 0;
+
+            let total = price * quantity;
+
+            $('#total_amount').val(total.toFixed(2));
+        }
+
+        $('#quantity').on('keyup change', function() {
+            calculateTotal();
+        });
+
+    });
+</script>

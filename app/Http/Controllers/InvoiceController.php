@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\InvoiceRequest;
+use App\Mail\InvoiceMail;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class InvoiceController extends Controller
 {
@@ -46,6 +48,13 @@ class InvoiceController extends Controller
             'quantity' => $request->quantity,
             'total_amount' => $total,
         ]);
+
+         Mail::to(
+            $invoice->customer->email
+        )->send(
+            new InvoiceMail($invoice)
+        );
+
         return redirect()->route('invoices.index')->with('success', 'Invoice created successfully.');
     }
 
@@ -62,15 +71,31 @@ class InvoiceController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $invoice = Invoice::where('id', $id)->first();
+        $customers = Customer::all();
+        $products = Product::all();
+        return view('invoices.edit', compact('invoice','customers','products'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(InvoiceRequest $request, string $id)
     {
-        //
+        $invoice = Invoice::where('id', $id)->first();
+        $product = Product::where('id',$invoice->product_id)->first();
+
+        $invoice->update([
+            'customer_id' => $request->customer_id,
+            'product_id' => $request->product_id,
+            'inoice_date' => $request->inoice_date,
+            'due_date' => $request->due_date,
+            'quantity' => $request->quantity,
+            'total_amount' => $product->price * $request->quantity,
+        ]);
+
+        return redirect()->route('invoices.index')->with('success', 'Invoice updated successfully.');
+
     }
 
     /**
@@ -78,6 +103,7 @@ class InvoiceController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Invoice::where('id', $id)->delete();
+        return redirect()->route('invoices.index')->with('success', 'Invoice deleted successfully.');
     }
 }

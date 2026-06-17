@@ -47,7 +47,7 @@
                         </div>
                         <div class="col-sm-6">
                             <label>Product</label>
-                            <select class="form-control" name="product_id">
+                            <select class="form-control" name="product_id" id="product_id">
                                 <option>Select Product</option>
                                 @foreach ($products as $product)
                                     <option value="{{ $product->id }}">{{ $product->name }}</option>
@@ -55,8 +55,20 @@
                             </select>
                         </div>
                         <div class="col-sm-6">
+                            <label>Description</label>
+                            <textarea id="description" class="form-control"></textarea>
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Price</label>
+                            <input type="text" name="price" id="price" class="form-control" readonly="true">
+                        </div>
+                        <div class="col-sm-6">
                             <label>Quantity</label>
-                            <input type="number" name="quantity" class="form-control">
+                            <input type="number" name="quantity" id="quantity" class="form-control">
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Total Amount</label>
+                            <input type="text" name="total_amount" id="total_amount" class="form-control" readonly>
                         </div>
                         <div class="col-sm-6">
                             <label> Invoice Date </label>
@@ -81,3 +93,52 @@
 </body>
 
 </html>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+
+        $('#product_id').change(function() {
+
+            let productId = $(this).val();
+
+            if (productId) {
+
+                $.ajax({
+                    url: '/get-product/' + productId,
+                    type: 'GET',
+                    success: function(response) {
+
+                        $('#price').val(response.price);
+                        $('#description').val(response.description);
+
+                    }
+                });
+
+            }
+
+        });
+
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+
+        function calculateTotal() {
+
+            let price = parseFloat($('#price').val()) || 0;
+            let quantity = parseInt($('#quantity').val()) || 0;
+
+            let total = price * quantity;
+
+            $('#total_amount').val(total.toFixed(2));
+        }
+
+        $('#quantity').on('keyup change', function() {
+            calculateTotal();
+        });
+
+    });
+</script>
