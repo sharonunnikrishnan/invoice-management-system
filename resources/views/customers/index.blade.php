@@ -48,11 +48,12 @@
                             <td>{{ $customer->email }}</td>
                             <td>{{ $customer->phone }}</td>
                             <td>{{ $customer->address }}</td>
-                            <td><a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning">Edit</a>
+                            <td>
                                 <form action="{{ route('customers.destroy', $customer->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
-
+                                    <a href="{{ route('customers.edit', $customer->id) }}"
+                                        class="btn btn-warning">Edit</a>
                                     <button type="submit" class="btn btn-danger">
                                         Delete
                                     </button>

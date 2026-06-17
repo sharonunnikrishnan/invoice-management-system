@@ -27,7 +27,7 @@ class InvoiceRequest extends FormRequest
             'product_id' => 'required|exists:products,id',
             'inoice_date' => 'required|date',
             'due_date' => 'required|date',
-            'quantity' => 'required|numeric'
+            'quantity' => 'required|numeric|min:1'
         ];
     }
 }

@@ -63,7 +63,8 @@ class InvoiceController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $invoices = Invoice::with('customer','product')->findOrFail($id);
+        return view('invoices.show', compact('invoices'));
     }
 
     /**

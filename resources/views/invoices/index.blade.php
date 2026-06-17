@@ -38,6 +38,8 @@
                         <th>Product</th>
                         <th>Invoice Date</th>
                         <th>Due Date</th>
+                        <th>Qty.</th>
+                        <th>Price</th>
                         <th>Total Amount</th>
                         <th>Actions</th>
                     </tr>
@@ -49,12 +51,15 @@
                             <td>{{ $invoice->product->name }}</td>
                             <td>{{ $invoice->inoice_date }}</td>
                             <td>{{ $invoice->due_date }}</td>
+                            <td>{{ $invoice->quantity }}</td>
+                            <td>{{ $invoice->product->price }}</td>
                             <td>{{ $invoice->total_amount }}</td>
-                            <td><a href="{{ route('invoices.edit', $invoice->id) }}" class="btn btn-warning">Edit</a>
+                            <td>
                                 <form action="{{ route('invoices.destroy', $invoice->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
-
+                                    <a href="{{ route('invoices.edit', $invoice->id) }}"
+                                        class="btn btn-warning">Edit</a>
                                     <button type="submit" class="btn btn-danger">
                                         Delete
                                     </button>
