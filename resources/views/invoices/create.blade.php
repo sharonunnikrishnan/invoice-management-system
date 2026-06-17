@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h2>Create New Invoice</h2>
+        <div class="row">
+            <div class="col-sm-12">
+                <a href="{{ route('dashboard') }}">
+                    <button class="btn btn-info">Dashboard</button>
+                </a>
+                <a href="{{ route('invoices.index') }}">
+                    <button class="btn btn-warning">Show All Invoices</button>
+                </a>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-sm-12">
+                <form method="post" action="{{ route('invoices.store') }}">
+                    @csrf
+                    @if ($errors->any())
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li class="text-danger">{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    @endif
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label>Customer</label>
+                            <select class="form-control" name="customer_id">
+                                <option>Select Customer</option>
+                                @foreach ($customers as $customer)
+                                    <option value="{{ $customer->id }}">{{ $customer->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Product</label>
+                            <select class="form-control" name="product_id">
+                                <option>Select Product</option>
+                                @foreach ($products as $product)
+                                    <option value="{{ $product->id }}">{{ $product->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Quantity</label>
+                            <input type="number" name="quantity" class="form-control">
+                        </div>
+                        <div class="col-sm-6">
+                            <label> Invoice Date </label>
+                            <input type="date" name="inoice_date" class="form-control">
+                        </div>
+                        <div class="col-sm-6">
+                            <label> Due Date </label>
+                            <input type="date" name="due_date" class="form-control">
+                        </div>
+                        <div class="col-sm-12 mt-5">
+                            <button type="submit" class="btn btn-primary">Save Invoice</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+
+    </div>
+
+</body>
+
+</html>
